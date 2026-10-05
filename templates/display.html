@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/display.css') }}">
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+</head>
+<body>
+    <main class="display-page">
+        <section class="display-main">
+            <div id="timer" class="timer hidden">
+                <div id="timer-fill"></div>
+                <span id="timer-text"></span>
+            </div>
+            <div id="main-content" class="main-content">
+                <div id="state-title" class="state-title">Ожидание игроков</div>
+                <div id="state-subtitle" class="state-subtitle">Подключите участников по QR-коду</div>
+                <div id="qr-area" class="qr-area">
+                    <canvas id="qr-canvas" width="238" height="238"></canvas>
+                    <div class="qr-or">или</div>
+                    <div class="qr-hint">введите код ниже на странице квиз.su</div>
+                    <div id="room-code" class="room-code">{{ room_code or '------' }}</div>
+                </div>
+                <div id="question-area" class="question-area hidden"></div>
+                <div id="countdown" class="countdown hidden"></div>
+                <div id="leaderboard-area" class="leaderboard-area hidden"></div>
+                <div id="controls" class="controls">
+                    <button id="btn-start" class="control-btn primary" type="button">Начать</button>
+                </div>
+                <button id="menu-toggle" class="menu-toggle hidden" type="button" aria-label="Меню">•••</button>
+                <div id="game-menu" class="game-menu hidden">
+                    <button id="btn-menu-finish" class="menu-btn danger" type="button">Завершить</button>
+                    <button id="btn-menu-pause" class="menu-btn" type="button">Пауза</button>
+                </div>
+            </div>
+        </section>
+        <aside class="players-panel">
+            <div class="players-title">Участники <span id="player-count">0</span></div>
+            <div id="players-list" class="players-list"></div>
+        </aside>
+    </main>
+    <script>
+        window.DISPLAY_CONFIG = {
+            roomCode: {{ room_code|default(None)|tojson }},
+            quizId: {{ quiz_id|tojson if quiz_id is defined else 'null' }},
+            autoCreate: {{ auto_create|tojson if auto_create is defined else false }}
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/display.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+    <!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Главная</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+    <header class="top-panel">
+        <a href="/home" class="logo">Квизы</a>
+        <nav class="menu">
+            <div class="input-div">
+                <input class="top-panel-input" placeholder="Поиск...">
+                <button class="search-btn">
+                    <svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M21 21L16.65 16.65" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+            </div>
+            <button class="login-link" id="openLoginBtn">
+                <span>Войти</span>
+                <img src="{{ url_for('static', filename='images/2815428.png') }}" alt="icon" class="btn-icon">
+            </button>
+            <div class="profile-container" id="userProfile" style="display: none;">
+                <div class="profile-name" id="profileName">user#0</div>
+                <div class="profile-id" id="profileId">ID: 0</div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="action-buttons">
+            <a href="/create" class="btn btn-create">Создать Квиз</a>
+            <a href="/" class="btn btn-connect">Присоединиться к квизу</a>
+        </div>
+
+        <section id="quizzes-section">
+            <h2 class="section-title">Шаблоны квизов</h2>
+            <div id="quizzes-grid" class="quizzes-grid">
+                <div class="loading-spinner">Загрузка...</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-window">
+            <span class="close-icon" id="closeLoginBtn">&times;</span>
+            
+            <div id="step-email">
+                <h2 class="modal-title">Вход</h2>
+                <input type="email" id="emailInput" class="modal-input" placeholder="Эл. почта">
+                <button class="modal-submit-btn" id="getCodeBtn">Получить код</button>
+                <p class="modal-footer-text">Чтобы войти, укажите адрес эл. почты.</p>
+            </div>
+
+            <div id="step-code" style="display: none; text-align: center;">
+
+                <img src="{{ url_for('static', filename='images/icon-email-873360.png') }}" 
+                     alt="Email Icon" 
+                     class="mail-icon-swing">
+                
+                <h3 style="margin: 10px 0;">Мы отправили код на<br><b id="displayEmail">email</b></h3>
+                <a href="#" id="changeEmailLink" style="color: #e67e22; font-size: 14px;">Изменить</a>
+                
+                <p style="margin: 20px 0 10px; color: #666;">Введите код</p>
+                
+                <div class="code-inputs">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                </div>
+
+                <button class="modal-submit-btn" id="verifyBtn">Войти</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/profile" class="footer-link">Личный кабинет</a>
+                
+                <a href="#" id="privacy-link" class="footer-link">Политика конфиденциальности</a>
+            </div>
+            
+            <div class="footer-copyright">
+                Xwared Team &copy; 2024-2026
+            </div>
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="cookie-banner" style="display: none;">
+        <div class="cookie-content">
+            <p>Мы используем файлы cookie для сохранения вашей сессии. <a href="/privacy_policy?l=ru" id="privacy-link-cookie" style="color:#e67e22;">Подробнее</a></p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="btn-cookie accept">Принять</button>
+                <button id="decline-cookies" class="btn-cookie decline">Отклонить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход в панель</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adm.css') }}">
+</head>
+<body>
+    <div class="box">
+        <h2 style="margin-top:0;">Админ-панель</h2>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        <form method="POST">
+            <input type="password" name="password" placeholder="Введите пароль" required autofocus>
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+</body>
+</html>

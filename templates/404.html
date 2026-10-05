@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz_info.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <header class="top-panel">
+        <a class="logo" id="nav-logo">Квизы бесплатно</a>
+        <nav class="menu">
+            <div class="input-div">
+                <input class="top-panel-input" placeholder="Поиск...">
+                <button class="search-btn">
+                    <svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M21 21L16.65 16.65" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+            </div>
+            <button class="login-link" id="openLoginBtn">
+                <span>Войти</span>
+                <img src="{{ url_for('static', filename='images/2815428.png') }}" alt="icon" class="btn-icon">
+            </button>
+            <div class="profile-container" id="userProfile" style="display: none;">
+                <div class="profile-name" id="profileName">user#0</div>
+                <div class="profile-id" id="profileId">ID: 0</div>
+            </div>
+        </nav>
+    </header>
+    <div id="quiz-app"></div>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/profile" class="footer-link">Личный кабинет</a>
+                
+                <a href="#" id="privacy-link" class="footer-link">Политика конфиденциальности</a>
+            </div>
+            
+            <div class="footer-copyright">
+                Xwared Team &copy; 2024-2026
+            </div>
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="cookie-banner" style="display: none;">
+        <div class="cookie-content">
+            <p>Мы используем файлы cookie для сохранения вашей сессии. <a href="/privacy_policy?l=ru" id="privacy-link-cookie" style="color:#e67e22;">Подробнее</a></p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="btn-cookie accept">Принять</button>
+                <button id="decline-cookies" class="btn-cookie decline">Отклонить</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/quiz_info.js') }}"></script>
+</body>

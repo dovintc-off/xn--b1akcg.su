@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вступление в игру</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/connect.css') }}">
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+</head>
+<body>
+    <main class="connect-main">
+        <div class="connect-card">
+            {% if room_exists %}
+                <div id="step-nick" class="game-step active-step">
+                    <div class="connect-title">Как вас зовут?</div>
+                    <div class="connect-info">Придумайте никнейм<br>для отображения на экране</div>
+                    <div class="connect-form">
+                        <input id="input-nick" placeholder="Никнейм" autocomplete="off" maxlength="15">
+                        <button id="btn-join" type="button">Войти</button>
+                    </div>
+                    <div id="nick-error" class="form-error"></div>
+                </div>
+                <div id="step-waiting" class="game-step hidden-step">
+                    <div class="connect-title warning-title">⚠️ Внимание!</div>
+                    <div class="connect-info">Смотрите на основной экран.<br>Вы уже в игре.</div>
+                    <div class="loader-dots"><span></span><span></span><span></span></div>
+                </div>
+                <div id="step-game" class="game-step hidden-step">
+                    <div id="phone-stage" class="phone-stage"></div>
+                </div>
+            {% else %}
+                <div class="game-step active-step">
+                    <div class="connect-title">Игра не найдена</div>
+                    <div class="connect-info">Проверьте код игры<br>и попробуйте ещё раз.</div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+    <script>
+        window.CONNECT_CONFIG = {
+            roomCode: {{ room_code|default(None)|tojson }},
+            roomExists: {{ room_exists|default(False)|tojson }},
+            quizId: null
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/connect.js') }}"></script>
+</body>
+</html>

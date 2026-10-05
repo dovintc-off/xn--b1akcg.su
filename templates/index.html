@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вступление в игру</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <a href="/home">Домой</a>
+    </div>
+    <main class="main-div">
+        <div class="main-content">
+            <div class="game-step">
+                <div class="message-title">Найти игру</div>
+                <div class="message-info">Введите код игры,<br>чтобы присоединиться</div>
+                <div class="search-block">
+                    <div class="input-block">
+                        <input
+                            id="input-code"
+                            type="text"
+                            placeholder="Код"
+                            autocomplete="off"
+                            maxlength="6"
+                            inputmode="numeric"
+                        >
+                    </div>
+                    <button class="find-button" id="btn-find" type="button">Войти</button>
+                </div>
+                <div id="code-error" class="form-error"></div>
+            </div>
+        </div>
+    </main>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>

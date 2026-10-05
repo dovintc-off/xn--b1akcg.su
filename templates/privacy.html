@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="{{ 'ru' if is_russian else 'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'Политика конфиденциальности' if is_russian else 'Privacy Policy' }} - Xwared Team</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/privacy.css') }}">
+</head>
+<body>
+    <div class="privacy-wrapper">
+        <div class="privacy-container">
+            <a href="/home" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                {{ 'На главную' if is_russian else 'Back to Home' }}
+            </a>
+
+            {% if is_russian %}
+            <div class="privacy-header">
+                <h1 class="privacy-title">Политика конфиденциальности</h1>
+                <p class="privacy-date">Дата последнего обновления: 23 сентября 2026 г.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>1. Общие положения</h2>
+                <p>Настоящая Политика конфиденциальности (далее — «Политика») определяет порядок обработки и защиты информации о физических лицах (далее — «Пользователи»), которые используют сервисы веб-сайта <strong>Xwared Team</strong> (далее — «Сайт» или «Сервис»), расположенного в сети Интернет.</p>
+                <p>Использование Сервиса означает безоговорочное согласие Пользователя с настоящей Политикой и указанными в ней условиями обработки его персональной информации. В случае несогласия с этими условиями Пользователь должен воздержаться от использования Сервиса.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>2. Какие данные мы собираем</h2>
+                <p>Мы собираем только те данные, которые необходимы для функционирования Сервиса и предоставления услуг:</p>
+                <ul>
+                    <li><strong>Email-адрес:</strong> Используется исключительно для идентификации пользователя и отправки одноразовых кодов подтверждения при входе (авторизация без пароля).</li>
+                    <li><strong>Никнейм (Username):</strong> Публичное имя, которое отображается другим пользователям во время участия в квизах.</li>
+                    <li><strong>Технические данные:</strong> IP-адрес, тип браузера, операционная система и данные о файлах Cookie. Эти данные используются для обеспечения безопасности, предотвращения мошенничества и корректной работы сессий.</li>
+                    <li><strong>Результаты игр:</strong> Данные о пройденных квизах, набранных очках и времени прохождения сохраняются для формирования статистики и рейтингов.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>3. Цели сбора данных</h2>
+                <p>Ваши персональные данные используются для следующих целей:</p>
+                <ul>
+                    <li>Предоставление доступа к личному кабинету и функционалу создания/прохождения квизов.</li>
+                    <li>Идентификация стороны в рамках соглашений и договоров с Сайтом.</li>
+                    <li>Установление с Пользователем обратной связи, включая направление уведомлений, запросов, касающихся использования Сервиса.</li>
+                    <li>Определение места нахождения Пользователя для обеспечения безопасности и предотвращения кибератак.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>4. Использование файлов Cookie</h2>
+                <p>Сайт использует файлы Cookie для сохранения настроек пользователя и поддержания сессии авторизации. Без использования Cookie функция входа в систему работать не будет.</p>
+                <p>Вы можете настроить свой браузер таким образом, чтобы он блокировал файлы Cookie или предупреждал вас об их отправке. Однако в этом случае некоторые функциональные части Сайта могут работать некорректно.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>5. Передача данных третьим лицам</h2>
+                <p>Администрация Сайта не продает и не передает персональные данные Пользователей третьим лицам, за исключением случаев:</p>
+                <ul>
+                    <li>Когда это необходимо для выполнения обязательств перед Пользователем (например, использование сторонних сервисов рассылки писем для отправки кодов подтверждения).</li>
+                    <li>По требованию уполномоченных органов государственной власти РФ в порядке, установленном законодательством.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>6. Защита данных</h2>
+                <p>Администрация Сайта принимает необходимые организационные и технические меры для защиты персональной информации Пользователя от неправомерного или случайного доступа, уничтожения, изменения, блокирования, копирования, распространения, а также от иных неправомерных действий третьих лиц.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>7. Права пользователя</h2>
+                <p>Пользователь имеет право:</p>
+                <ul>
+                    <li>Получать информацию, касающуюся обработки его персональных данных.</li>
+                    <li>Требовать уточнения своих персональных данных, их блокирования или уничтожения в случае, если данные являются неполными, устаревшими, неточными.</li>
+                    <li>Отозвать согласие на обработку персональных данных, направив письменный уведомление на электронный адрес администрации.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>8. Контактная информация</h2>
+                <p>По всем вопросам, связанным с обработкой персональных данных, вы можете связаться с нами:</p>
+                <p><strong>Email:</strong> xwared.support@gmail.com<br>
+            </div>
+
+            {% else %}
+            <div class="privacy-header">
+                <h1 class="privacy-title">Privacy Policy</h1>
+                <p class="privacy-date">Last Updated: September 23, 2026</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>1. General Provisions</h2>
+                <p>This Privacy Policy (hereinafter referred to as the "Policy") determines the procedure for processing and protecting information about individuals (hereinafter referred to as "Users") who use the services of the <strong>Xwared Team</strong> website (hereinafter referred to as the "Site" or "Service").</p>
+                <p>Using the Service implies your unconditional consent to this Policy and the terms of personal data processing specified herein. If you do not agree with these terms, you must refrain from using the Service.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>2. Data We Collect</h2>
+                <p>We collect only the data necessary for the functioning of the Service:</p>
+                <ul>
+                    <li><strong>Email Address:</strong> Used exclusively for user identification and sending one-time verification codes for login (passwordless authentication).</li>
+                    <li><strong>Username:</strong> A public name displayed to other users during quizzes.</li>
+                    <li><strong>Technical Data:</strong> IP address, browser type, operating system, and Cookie data. This is used for security, fraud prevention, and session management.</li>
+                    <li><strong>Game Results:</strong> Data on completed quizzes, scores, and time taken are stored for statistics and leaderboards.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>3. Purpose of Data Collection</h2>
+                <p>Your personal data is used for the following purposes:</p>
+                <ul>
+                    <li>Providing access to your personal account and quiz creation/participation features.</li>
+                    <li>User identification within the framework of agreements with the Site.</li>
+                    <li>Establishing feedback with the User, including sending notifications and requests regarding the use of the Service.</li>
+                    <li>Determining the User's location for security purposes and preventing cyberattacks.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>4. Use of Cookies</h2>
+                <p>The Site uses Cookies to save user preferences and maintain authorization sessions. Without Cookies, the login function will not work.</p>
+                <p>You can configure your browser to block Cookies or warn you when they are being sent. However, in this case, some functional parts of the Site may not work correctly.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>5. Data Sharing</h2>
+                <p>The Site Administration does not sell or transfer Users' personal data to third parties, except in the following cases:</p>
+                <ul>
+                    <li>When necessary to fulfill obligations to the User (e.g., using third-party email services to send verification codes).</li>
+                    <li>At the request of authorized state authorities in accordance with applicable law.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>6. Data Security</h2>
+                <p>The Site Administration takes all necessary organizational and technical measures to protect the User's personal information from unauthorized or accidental access, destruction, alteration, blocking, copying, distribution, and other unlawful actions by third parties.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>7. User Rights</h2>
+                <p>The User has the right to:</p>
+                <ul>
+                    <li>Receive information regarding the processing of their personal data.</li>
+                    <li>Request clarification, blocking, or deletion of their personal data if it is incomplete, outdated, or inaccurate.</li>
+                    <li>Withdraw consent for personal data processing by sending a written notice to the administration's email address.</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>8. Contact Information</h2>
+                <p>For any questions related to personal data processing, please contact us at:</p>
+                <p><strong>Email:</strong> xwared.support@gmail.com<br>
+            </div>
+            {% endif %}
+        </div>
+        
+        <footer class="site-footer" style="margin-top: 0;">
+             <div class="footer-container">
+                <div class="footer-copyright">Xwared Team &copy; 2026</div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

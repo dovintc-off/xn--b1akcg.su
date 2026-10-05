@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ панель | Xwared</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="/home" class="logo">Admin panel</a>
+        
+        <nav class="sidebar-nav">
+            <a href="/adm-panel?view=stats" class="nav-link {% if view_mode == 'stats' %}active{% endif %}">Статистика</a>
+            
+            <div style="height: 1px; background: var(--border); margin: 8px 0;"></div>
+            
+            <a href="/adm-panel?view=users" class="nav-link {% if view_mode == 'users' %}active{% endif %}">Пользователи</a>
+            <a href="/adm-panel?view=codes" class="nav-link {% if view_mode == 'codes' %}active{% endif %}"> Коды</a>
+            <a href="/adm-panel?view=active_rooms" class="nav-link {% if view_mode == 'active_rooms' %}active{% endif %}">Комнаты</a>
+            
+            <div class="flex-spacer"></div>
+            <a href="/adm-logout" class="nav-link logout-btn">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        {% if view_mode == 'stats' %}
+        <div class="top-bar">
+            <h1>Статистика и логи</h1>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card highlight">
+                <span class="stat-label">Онлайн сейчас</span>
+                <span class="stat-value">{{ stats.online }}</span>
+            </div>
+
+            <div class="logs-section">
+                <div class="logs-header">
+                    <span>Журнал событий ({{ stats.total_in_range }})</span>
+                    
+                    <form method="GET" action="/adm-panel" class="date-filter-form">
+                        <input type="hidden" name="view" value="stats">
+                        <input type="hidden" name="log_limit" value="{{ current_log_limit }}">
+                        
+                        <div class="date-inputs-row">
+                            <input type="datetime-local" name="date_from" class="filter-select compact" 
+                                   value="{{ filter_date_from }}" placeholder="С">
+                            <input type="datetime-local" name="date_to" class="filter-select compact" 
+                                   value="{{ filter_date_to }}" placeholder="По">
+                        </div>
+                        <button type="submit" class="btn-action primary compact">Применить</button>
+                    </form>
+                </div>
+
+                <div class="logs-list">
+                    {% for log in stats.logs %}
+                    <div class="log-entry">
+                        <span class="log-ip" title="{{ log.ip }}">{{ log.ip }}</span>
+                        <span class="log-path" title="{{ log.path }}">{{ log.path }}</span>
+                        <span class="log-time">{{ log.request_date.split(' ')[1][:5] if ' ' in log.request_date else log.request_date[:5] }}</span>
+                    </div>
+                    {% else %}
+                    <div class="empty-logs">Нет событий в выбранном периоде</div>
+                    {% endfor %}
+                </div>
+                
+                <select id="logLimitSelect" class="filter-select full-width compact mt-4">
+                    {% for lim in [10, 20, 50, 100] %}
+                    <option value="{{ lim }}" {% if current_log_limit == lim %}selected{% endif %}>Показывать: {{ lim }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Обычная таблица для остальных разделов -->
+        <div class="top-bar">
+            <h1>
+                {% if view_mode == 'users' %}Пользователи
+                {% elif view_mode == 'codes' %}Коды подтверждения
+                {% elif view_mode == 'active_rooms' %}Активные комнаты
+                {% else %}Админ панель{% endif %}
+            </h1>
+            
+            <div class="controls-panel">
+                {% if view_mode == 'users' %}
+                <select id="filterSelect" class="filter-select">
+                    <option value="username">По Username</option>
+                    <option value="mail">По Email</option>
+                    <option value="id">По ID</option>
+                </select>
+                {% endif %}
+
+                <div class="search-box">
+                    <span class="search-icon"></span>
+                    <input type="text" id="searchInput" placeholder="{% if view_mode == 'users' %}Поиск...{% elif view_mode == 'codes' %}Поиск по почте...{% else %}Поиск по коду...{% endif %}">
+                </div>
+
+                <button id="bulkDeleteBtn" class="btn-bulk-delete">Удалить</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        {% if view_mode in ['codes', 'active_rooms'] %}
+                            <th style="width: 40px;"><input type="checkbox" id="selectAll"></th>
+                        {% endif %}
+                        
+                        {% for header in headers %}<th>{{ header }}</th>{% endfor %}
+                        
+                        {% if view_mode == 'users' %}<th style="width: 120px;">Роль</th>
+                        {% elif view_mode == 'active_rooms' %}<th style="width: 100px;">Действия</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% for row in data %}
+                    <tr data-id="{{ row.id }}">
+                        {% if view_mode in ['codes', 'active_rooms'] %}
+                            <td><input type="checkbox" class="row-checkbox" value="{{ row.id }}"></td>
+                        {% endif %}
+                        
+                        {% for key in keys %}
+                            <td data-field="{{ key }}">{{ row[key] }}</td>
+                        {% endfor %}
+
+                        {% if view_mode == 'users' %}
+                            <td>
+                                <select class="role-select" onchange="changeRole({{ row.id }}, this.value)">
+                                    <option value="user" {% if row.permissions == 'user' %}selected{% endif %}>User</option>
+                                    <option value="admin" {% if row.permissions == 'admin' %}selected{% endif %}>Admin</option>
+                                </select>
+                            </td>
+                        {% elif view_mode == 'active_rooms' %}
+                            <td><button class="btn-action btn-delete-single" onclick="deleteRoom({{ row.invite_code }})">Удалить</button></td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="{{ keys|length + 2 }}" class="empty-table-cell">Нет записей</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="load-more-wrap">
+                <button class="btn-load" id="loadMoreBtn">Загрузить ещё</button>
+            </div>
+        </div>
+        {% endif %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - {{ username }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+
+    <div class="profile-wrapper">
+        <div class="profile-card">
+            
+            <div class="profile-header">
+                <h2>Настройки профиля</h2>
+                <a href="/home" class="back-link">На главную</a>
+            </div>
+
+            <div class="form-group">
+                <label for="user-id">ID пользователя</label>
+                <div id="user-id" class="static-value">{{ user_id }}</div>
+            </div>
+
+            <div class="form-group">
+                <label for="user-perms">Права доступа</label>
+                <div id="user-perms" class="static-value">
+                    <span class="badge badge-{{ permissions }}">{{ permissions }}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username-display">Имя пользователя</label>
+
+                <div id="view-mode" class="input-group">
+                    <span id="username-display" class="static-value">{{ username }}</span>
+                    <button type="button" id="btn-edit" class="btn btn-primary">Изменить</button>
+                </div>
+
+                <div id="edit-mode" class="input-group" style="display: none;">
+                    <input type="text" id="username-input" class="form-control" placeholder="Введите новое имя">
+                    <button type="button" id="btn-save" class="btn btn-success">Сохранить</button>
+                    <button type="button" id="btn-cancel" class="btn btn-secondary">Отмена</button>
+                </div>
+
+                <div id="msg-box" class="message-box"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/profile" class="footer-link">Личный кабинет</a>
+                
+                <a href="#" id="privacy-link" class="footer-link">Политика конфиденциальности</a>
+            </div>
+            
+            <div class="footer-copyright">
+                Xwared Team &copy; 2024-2026
+            </div>
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="cookie-banner" style="display: none;">
+        <div class="cookie-content">
+            <p>Мы используем файлы cookie для сохранения вашей сессии. <a href="/privacy_policy?l=ru" id="privacy-link-cookie" style="color:#e67e22;">Подробнее</a></p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="btn-cookie accept">Принять</button>
+                <button id="decline-cookies" class="btn-cookie decline">Отклонить</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+</body>
+</html>

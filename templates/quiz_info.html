@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ quiz_data.Name if quiz_data else 'Квиз' }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quiz_info.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <header class="top-panel">
+        <a class="logo" id="nav-logo">Квизы</a>
+        <nav class="menu">
+            <button class="login-link" id="openLoginBtn">
+                <span>Войти</span>
+                <img src="{{ url_for('static', filename='images/2815428.png') }}" alt="icon" class="btn-icon">
+            </button>
+            <div class="profile-container" id="userProfile" style="display: none;">
+                <div class="profile-name" id="profileName">user#0</div>
+                <div class="profile-id" id="profileId">ID: 0</div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="quiz-app"></main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/profile" class="footer-link">Личный кабинет</a>
+                <a href="#" id="privacy-link" class="footer-link">Политика конфиденциальности</a>
+            </div>
+            <div class="footer-copyright">Xwared Team &copy; 2024-2026</div>
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="cookie-banner" style="display: none;">
+        <div class="cookie-content">
+            <p>Мы используем файлы cookie. <a href="/privacy_policy?l=ru" style="color:#e67e22;">Подробнее</a></p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="btn-cookie accept">Принять</button>
+                <button id="decline-cookies" class="btn-cookie decline">Отклонить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="loginModal" style="display: none;">
+        <div class="modal-window">
+            <span class="close-icon" id="closeLoginBtn">&times;</span>
+            <div id="step-email">
+                <h2 class="modal-title">Вход</h2>
+                <input type="email" id="emailInput" class="modal-input" placeholder="Эл. почта">
+                <button class="modal-submit-btn" id="getCodeBtn">Получить код</button>
+                <p class="modal-footer-text">Чтобы войти, укажите адрес эл. почты.</p>
+            </div>
+            <div id="step-code" style="display: none; text-align: center;">
+                <h3 style="margin: 10px 0;">Мы отправили код на<br><b id="displayEmail">email</b></h3>
+                <a href="#" id="changeEmailLink" style="color: #e67e22; font-size: 14px;">Изменить</a>
+                <p style="margin: 20px 0 10px; color: #666;">Введите код</p>
+                <div class="code-inputs">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                    <input type="text" maxlength="1" class="code-box" inputmode="numeric">
+                </div>
+                <button class="modal-submit-btn" id="verifyBtn">Войти</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginRequiredModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3>Требуется авторизация</h3>
+            <p>Для запуска игры необходимо войти в аккаунт.</p>
+            <div class="modal-actions">
+                <button id="goToLoginBtn" class="btn-primary">Войти</button>
+                <button id="closeLoginReqBtn" class="btn-secondary">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.currentQuizData = {
+            Name: "{{ quiz_data.Name | default('') }}",
+            Description: "{{ quiz_data.Description | default('') }}",
+            PreviewImagePath: "{{ quiz_data.PreviewImagePath | default('') }}"
+        };
+        window.currentQuizId = new URLSearchParams(window.location.search).get('id');
+    </script>
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/quiz_info.js') }}"></script>
+</body>
+</html>

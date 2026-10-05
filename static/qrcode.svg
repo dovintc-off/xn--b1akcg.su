@@ -1,0 +1,493 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const quiz = window.currentQuizData;
+    const quizId = window.currentQuizId;
+    const menu = document.querySelector('.menu');
+    const container = document.getElementById('quiz-app');
+
+    if (!container) {
+        console.error("Ошибка: не найден #quiz-app");
+        return;
+    }
+
+    if (quiz && quizId && menu) {
+        const oldPlayBtn = menu.querySelector('.play-btn');
+        if (oldPlayBtn) oldPlayBtn.remove();
+
+        const playBtn = document.createElement('button');
+        playBtn.className = 'play-btn';
+        playBtn.type = 'button';
+        playBtn.textContent = 'Играть';
+
+        playBtn.onclick = function() {
+            window.location.href = `/display?new_room=${encodeURIComponent(quizId)}`;
+        };
+
+        const loginLink = document.getElementById('openLoginBtn');
+        if (loginLink) {
+            menu.insertBefore(playBtn, loginLink);
+        } else {
+            menu.appendChild(playBtn);
+        }
+    }
+
+    if (!quiz || !quizId) {
+        init404Effect();
+        const navLogo = document.getElementById('nav-logo');
+        if (navLogo) {
+            navLogo.innerHTML = `<a href="/home" class="logo">Главная</a> / Не найдено`;
+        }
+        return;
+    }
+
+    function escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function parseMedia(questionText) {
+        const mediaRegex = /\{(IMAGE|VIDEO|SOUND|MUSIC):([^}]+)\}/g;
+        let mediaHtml = '';
+        const cleanText = String(questionText || '').replace(mediaRegex, '');
+        let match;
+
+        mediaRegex.lastIndex = 0;
+
+        while ((match = mediaRegex.exec(String(questionText || ''))) !== null) {
+            const type = match[1];
+            const filename = match[2].trim();
+            const fileUrl = `/get_quiz_media/${encodeURIComponent(quizId)}/${encodeURIComponent(filename)}`;
+
+            if (type === 'IMAGE') {
+                mediaHtml += `
+                    <div class="quiz-media-wrap image-box">
+                        <img src="${fileUrl}" class="quiz-media-img" alt="Изображение">
+                    </div>
+                `;
+            } else if (type === 'VIDEO') {
+                mediaHtml += `
+                    <div class="quiz-media-wrap video-box">
+                        <video src="${fileUrl}" class="plyr-video" controls playsinline preload="metadata"></video>
+                    </div>
+                `;
+            } else if (type === 'SOUND' || type === 'MUSIC') {
+                mediaHtml += `
+                    <div class="quiz-audio-wrap">
+                        <audio src="${fileUrl}" class="plyr-audio" controls></audio>
+                    </div>
+                `;
+            }
+        }
+
+        return {
+            text: cleanText.trim(),
+            media: mediaHtml
+        };
+    }
+
+    function getStageKeys() {
+        return Object.keys(quiz)
+            .filter(key => /^\d+$/.test(key))
+            .sort((a, b) => Number(a) - Number(b));
+    }
+
+    function getQuestionKeys(stage) {
+        return Object.keys(stage || {})
+            .filter(key => /^\d+$/.test(key) && stage[key] && typeof stage[key] === 'object')
+            .sort((a, b) => Number(a) - Number(b));
+    }
+
+    function getModifyText(modify) {
+        if (!Array.isArray(modify) || modify.length === 0) {
+            return '';
+        }
+
+        const names = {
+            fastest: 'Самый быстрый ответ'
+        };
+
+        return modify
+            .map(item => names[item] || item)
+            .join(', ');
+    }
+
+    function createTabs() {
+        const existingTabs = document.getElementById('quiz-tabs');
+        if (existingTabs) {
+            existingTabs.remove();
+        }
+
+        const tabs = document.createElement('nav');
+        tabs.className = 'quiz-tabs';
+        tabs.id = 'quiz-tabs';
+
+        tabs.innerHTML = `
+            <button class="quiz-tab active" id="tab-description" type="button">
+                Описание
+            </button>
+            <button class="quiz-tab" id="tab-details" type="button">
+                Подробно
+            </button>
+        `;
+
+        const quizApp = document.getElementById('quiz-app');
+        quizApp.parentNode.insertBefore(tabs, quizApp);
+
+        const descriptionTab = document.getElementById('tab-description');
+        const detailsTab = document.getElementById('tab-details');
+
+        descriptionTab.addEventListener('click', function() {
+            switchTab('description');
+        });
+
+        detailsTab.addEventListener('click', function() {
+            switchTab('details');
+        });
+    }
+
+    function switchTab(tab) {
+        const descriptionTab = document.getElementById('tab-description');
+        const detailsTab = document.getElementById('tab-details');
+
+        if (descriptionTab) {
+            descriptionTab.classList.toggle('active', tab === 'description');
+        }
+
+        if (detailsTab) {
+            detailsTab.classList.toggle('active', tab === 'details');
+        }
+
+        if (tab === 'description') {
+            renderDescription();
+        } else {
+            renderDetails();
+        }
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    function renderDescription() {
+        container.innerHTML = `
+            <section class="quiz-description-page">
+                <div class="quiz-description-card">
+                    <div class="quiz-description-image-wrap">
+                        <img
+                            src="${escapeHtml(quiz.PreviewImagePath || '')}"
+                            alt=""
+                            class="quiz-description-image"
+                            onerror="this.parentElement.style.display='none';"
+                        >
+                    </div>
+                    <div class="quiz-description-content">
+                        <h1>${escapeHtml(quiz.Name || 'Без названия')}</h1>
+                        <p>${escapeHtml(quiz.Description || 'Описание отсутствует.')}</p>
+                    </div>
+                </div>
+            </section>
+        `;
+    }
+
+    function renderDetails() {
+        const stageKeys = getStageKeys();
+
+        if (stageKeys.length === 0) {
+            container.innerHTML = `
+                <section class="quiz-details-page">
+                    <div class="quiz-empty-details">
+                        <h2>Подробная информация отсутствует</h2>
+                        <p>В этом квизе пока нет раундов и вопросов.</p>
+                    </div>
+                </section>
+            `;
+            return;
+        }
+
+        let html = `
+            <section class="quiz-details-page">
+                <div class="details-container">
+        `;
+
+        stageKeys.forEach(stageKey => {
+            const stage = quiz[stageKey];
+            const stageName = stage.Name_Stage || `Раунд ${stageKey}`;
+            const time = stage.time_to_answer;
+            const modifyText = getModifyText(stage.modify);
+            const questionKeys = getQuestionKeys(stage);
+
+            html += `
+                <section class="stage-block">
+                    <div class="stage-header">
+                        <div class="stage-number">
+                            Раунд ${escapeHtml(stageKey)}
+                        </div>
+                        <h2 class="stage-title">
+                            ${escapeHtml(stageName)}
+                        </h2>
+                        <div class="stage-meta">
+            `;
+
+            if (time !== undefined && time !== null) {
+                html += `
+                    <span class="stage-meta-item">
+                        <span class="stage-meta-icon">⏱</span>
+                        ${escapeHtml(time)} сек. на ответ
+                    </span>
+                `;
+            }
+
+            if (modifyText) {
+                html += `
+                    <span class="stage-meta-item stage-mode">
+                        <span class="stage-meta-icon">⚡</span>
+                        ${escapeHtml(modifyText)}
+                    </span>
+                `;
+            }
+
+            html += `
+                        </div>
+                    </div>
+            `;
+
+            questionKeys.forEach(questionKey => {
+                const question = stage[questionKey];
+                const parsed = parseMedia(question.question);
+                const options = Array.isArray(question.question_options)
+                    ? question.question_options
+                    : [];
+
+                html += `
+                    <article class="question-card">
+                        <div class="question-number">
+                            Вопрос ${escapeHtml(questionKey)}
+                        </div>
+
+                        <div class="question-content">
+                            <div class="question-text">
+                                ${escapeHtml(parsed.text)}
+                            </div>
+                `;
+
+                if (parsed.media) {
+                    html += `
+                        <div class="media-container">
+                            ${parsed.media}
+                        </div>
+                    `;
+                }
+
+                if (options.length > 0) {
+                    html += `
+                        <div class="options-grid">
+                    `;
+
+                    options.forEach((option, optionIndex) => {
+                        const isCorrect = String(option) === String(question.answer);
+
+                        html += `
+                            <div class="answer-option ${isCorrect ? 'correct-option' : ''}">
+                                <span class="answer-letter">
+                                    ${String.fromCharCode(65 + optionIndex)}
+                                </span>
+                                <span class="answer-value">
+                                    ${escapeHtml(option)}
+                                </span>
+                                ${isCorrect ? '<span class="correct-mark">✓</span>' : ''}
+                            </div>
+                        `;
+                    });
+
+                    html += `
+                        </div>
+                    `;
+                }
+
+                if (question.explanation) {
+                    html += `
+                        <div class="question-explanation">
+                            <div class="explanation-title">
+                                <span>ℹ</span>
+                                Объяснение
+                            </div>
+                            <div class="explanation-text">
+                                ${escapeHtml(question.explanation)}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
+                    </article>
+                `;
+            });
+
+            html += `
+                </section>
+            `;
+        });
+
+        html += `
+                </div>
+            </section>
+        `;
+
+        container.innerHTML = html;
+    }
+
+    function initQuiz() {
+        const navLogo = document.getElementById('nav-logo');
+
+        if (navLogo && quiz.Name) {
+            navLogo.innerHTML = `<a href="/home" class="logo">Главная</a> / ${escapeHtml(quiz.Name)}`;
+        }
+
+        createTabs();
+        renderDescription();
+    }
+
+    function init404Effect() {
+        container.innerHTML = `
+            <div class="error-overlay">
+                <canvas id="dot-canvas"></canvas>
+                <div class="error-404-container">
+                    <h1 class="error-404-text">404</h1>
+                    <p class="error-404-subtext">
+                        Квиз не найден или данные повреждены
+                    </p>
+                </div>
+            </div>
+        `;
+
+        const canvas = document.getElementById('dot-canvas');
+
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+
+        let width;
+        let height;
+        let dots = [];
+
+        const gridSize = 20;
+        const interactionRadius = gridSize * 5;
+        const baseRadius = 1;
+        const maxRadius = baseRadius * 3.25;
+
+        const mouse = {
+            x: -9999,
+            y: -9999
+        };
+
+        class Dot {
+            constructor(x, y) {
+                this.originX = x;
+                this.originY = y;
+                this.currentRadius = baseRadius;
+                this.targetRadius = baseRadius;
+                this.baseOpacity = 0.15;
+                this.currentOpacity = this.baseOpacity;
+                this.targetOpacity = this.baseOpacity;
+            }
+
+            update() {
+                const dx = mouse.x - this.originX;
+                const dy = mouse.y - this.originY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < interactionRadius) {
+                    const force = 1 - distance / interactionRadius;
+
+                    this.targetRadius =
+                        baseRadius +
+                        (maxRadius - baseRadius) * force;
+
+                    this.targetOpacity =
+                        this.baseOpacity +
+                        (0.85 - this.baseOpacity) * force;
+                } else {
+                    this.targetRadius = baseRadius;
+                    this.targetOpacity = this.baseOpacity;
+                }
+
+                this.currentRadius +=
+                    (this.targetRadius - this.currentRadius) * 0.12;
+
+                this.currentOpacity +=
+                    (this.targetOpacity - this.currentOpacity) * 0.12;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(
+                    this.originX,
+                    this.originY,
+                    this.currentRadius,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fillStyle =
+                    `rgba(60, 60, 60, ${this.currentOpacity})`;
+
+                ctx.fill();
+            }
+        }
+
+        function initGrid() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            dots = [];
+
+            for (let x = 0; x < width; x += gridSize) {
+                for (let y = 0; y < height; y += gridSize) {
+                    dots.push(
+                        new Dot(
+                            x + gridSize / 2,
+                            y + gridSize / 2
+                        )
+                    );
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < dots.length; i++) {
+                dots[i].update();
+                dots[i].draw();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('mousemove', function(event) {
+            const rect = canvas.getBoundingClientRect();
+
+            mouse.x = event.clientX - rect.left;
+            mouse.y = event.clientY - rect.top;
+        });
+
+        window.addEventListener('mouseleave', function() {
+            mouse.x = -9999;
+            mouse.y = -9999;
+        });
+
+        window.addEventListener('resize', function() {
+            initGrid();
+        });
+
+        initGrid();
+        animate();
+    }
+
+    initQuiz();
+});

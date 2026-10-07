@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ 'Политика конфиденциальности' if is_russian else 'Privacy Policy' }} - Xwared Team</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/privacy.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 </head>
 <body>
     <div class="privacy-wrapper">
@@ -156,12 +157,21 @@
             </div>
             {% endif %}
         </div>
-        
-        <footer class="site-footer" style="margin-top: 0;">
-             <div class="footer-container">
-                <div class="footer-copyright">Xwared Team &copy; 2026</div>
-            </div>
-        </footer>
     </div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="/profile" class="footer-link">Личный кабинет</a>
+                
+                <a href="#" id="privacy-link" class="footer-link">Политика конфиденциальности</a>
+            </div>
+            
+            <div class="footer-copyright">
+                <span class="team-name">Xwared Team</span> &copy; 2024-2026
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>

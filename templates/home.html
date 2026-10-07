@@ -1,5 +1,5 @@
-    <!DOCTYPE html>
-    <html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
     <head>
         <meta charset="UTF-8">
         <title>Главная</title>
@@ -10,6 +10,9 @@
     <header class="top-panel">
         <a href="/home" class="logo">Квизы</a>
         <nav class="menu">
+            <div class="action-buttons">
+                <a href="/" class="btn btn-connect">Присоединиться к квизу</a>
+            </div>
             <div class="input-div">
                 <input class="top-panel-input" placeholder="Поиск...">
                 <button class="search-btn">
@@ -31,11 +34,6 @@
     </header>
 
     <main class="main-content">
-        <div class="action-buttons">
-            <a href="/create" class="btn btn-create">Создать Квиз</a>
-            <a href="/" class="btn btn-connect">Присоединиться к квизу</a>
-        </div>
-
         <section id="quizzes-section">
             <h2 class="section-title">Шаблоны квизов</h2>
             <div id="quizzes-grid" class="quizzes-grid">
@@ -89,7 +87,7 @@
             </div>
             
             <div class="footer-copyright">
-                Xwared Team &copy; 2024-2026
+                <span class="team-name">Xwared Team</span> &copy; 2024-2026
             </div>
         </div>
     </footer>

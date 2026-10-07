@@ -10,7 +10,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const profileId = document.getElementById('profileId');
                 
                 if (openBtn) openBtn.style.display = 'none';
-                if (userProfile) userProfile.style.display = 'flex';
+                if (userProfile) {
+                    userProfile.style.display = 'flex';
+                    
+                    userProfile.style.cursor = 'pointer';
+                    userProfile.onclick = () => {
+                        window.location.href = '/profile';
+                    };
+                }
+                
                 if (profileName) profileName.innerText = data.username;
                 if (profileId) profileId.innerText = `ID: ${data.user_id}`;
             }
